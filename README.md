@@ -56,6 +56,8 @@ If for some reason you don't have site.css, create it.
 
 To ensure our Tailwind CSS is built and up-to-date before every build of our ASP.NET Core application, we modify the project file to include our `site.css` and `tailwind.config.js` in the list of files to check. Additionally, we define a custom MSBuild target to run our Tailwind build script:
 
+Add the following snippet to your `.csproj` file. Place it right below the first `<PropertyGroup>` property.
+
 ```xml
 <ItemGroup>
   <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
@@ -92,7 +94,7 @@ npm run build
 This will create the tailwind.css file in your wwwroot/css directory with all of Tailwind's utility classes ready to be used in your project.
 
 ---
-### Step 7: Reference the Output CSS
+### Step 8: Reference the Output CSS
 
 Link the generated Tailwind CSS file in your `_Layout.cshtml` or other shared layout file. Add the following line to the `<head>` section of your HTML:
 
@@ -102,7 +104,7 @@ Link the generated Tailwind CSS file in your `_Layout.cshtml` or other shared la
 By adding this link to your layout file, you make the Tailwind styles available throughout all the views that use this layout.
 
 ---
-### Step 8: (Optional) Setup for Production
+### Step 9: (Optional) Setup for Production
 
 To prepare your Tailwind CSS for production, you'll want to remove any unused CSS for a smaller file size. Install the `@fullhuman/postcss-purgecss` package to help with this:
 
@@ -126,7 +128,7 @@ module.exports = {
 This setup will ensure that the final CSS file includes only the styles that are actually used in your HTML and Razor view files.
 
 ---
-### Step 9: Use Tailwind in Your Views
+### Step 10: Use Tailwind in Your Views
 
 Now that Tailwind CSS is integrated into your project, you can use its utility classes in your Razor views. Start by applying Tailwind's classes to your HTML elements to style them according to your design:
 

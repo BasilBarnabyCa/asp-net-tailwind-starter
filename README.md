@@ -40,36 +40,56 @@ This command creates a default Tailwind configuration file which you can customi
 ---
 ### Step 4: Create Your CSS File
 
-Add a new CSS file in the `wwwroot/css` directory named `styles.css`. Then, add the following Tailwind directives to it:
+Update and replace all content in the site.css found in the `wwwroot/css` directory by adding the following Tailwind directives.
+If for some reason you don't have site.css, create it.
 
 ```css
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
 ```
-This file will include all Tailwind CSS classes, which will be processed to generate your final stylesheet.
+
+ This file will include all Tailwind CSS classes, which will be processed to generate your final stylesheet.
 
 ---
-### Step 5: Process CSS with Tailwind
+### Step 5: Integrating Tailwind Build into MSBuild Process
+
+To ensure our Tailwind CSS is built and up-to-date before every build of our ASP.NET Core application, we modify the project file to include our `site.css` and `tailwind.config.js` in the list of files to check. Additionally, we define a custom MSBuild target to run our Tailwind build script:
+
+```xml
+<ItemGroup>
+  <UpToDateCheckBuilt Include="wwwroot/css/site.css" Set="Css" />
+  <UpToDateCheckBuilt Include="tailwind.config.js" Set="Css" />
+</ItemGroup>
+
+<Target Name="Tailwind" BeforeTargets="Build">
+  <Exec Command="npm run css:build"/>
+</Target>
+```
+
+This setup ensures that any changes made to the Tailwind configuration or the site's CSS trigger a rebuild of the Tailwind output, keeping styles synchronized with your project's development.
+
+---
+### Step 6: Process CSS with Tailwind
 
 Add a build script to your `package.json` file to enable processing your CSS file with Tailwind:
 
 ```json
 "scripts": {
-  "build": "tailwindcss build wwwroot/css/styles.css -o wwwroot/css/output.css"
+  "build": "tailwindcss build wwwroot/css/site.css -o wwwroot/css/tailwind.css"
 }
 ```
-This script uses the Tailwind CLI to build your CSS, applying all Tailwind styles and utilities to the styles.css file and outputting the final CSS to output.css.
+This script uses the Tailwind CLI to build your CSS, applying all Tailwind styles and utilities to the styles.css file and outputting the final CSS to tailwind.css.
 
 ---
-### Step 6: Build the Tailwind CSS
+### Step 7: Build the Tailwind CSS
 
-Run the build script to generate `output.css` which will contain all the processed Tailwind CSS styles:
+Run the build script to generate `tailwind.css` which will contain all the processed Tailwind CSS styles:
 
 ```bash
 npm run build
 ```
-This will create the output.css file in your wwwroot/css directory with all of Tailwind's utility classes ready to be used in your project.
+This will create the tailwind.css file in your wwwroot/css directory with all of Tailwind's utility classes ready to be used in your project.
 
 ---
 ### Step 7: Reference the Output CSS
@@ -77,7 +97,7 @@ This will create the output.css file in your wwwroot/css directory with all of T
 Link the generated Tailwind CSS file in your `_Layout.cshtml` or other shared layout file. Add the following line to the `<head>` section of your HTML:
 
 ```html
-<link rel="stylesheet" href="~/css/output.css">
+<link rel="stylesheet" href="~/css/tailwind.css">
 ```
 By adding this link to your layout file, you make the Tailwind styles available throughout all the views that use this layout.
 
